@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "posthog": "node node_modules/@posthog/wizard/dist/bin.js"
   },
   "dependencies": {
     "@base-ui/react": "^1.8.0",
@@ -14,14 +15,18 @@
     "clsx": "^2.1.1",
     "cn": "^0.4.0",
     "lucide-react": "^1.48.0",
+    "mongoose": "^9.10.2",
     "next": "16.3.6",
     "ogl": "^1.0.11",
+    "posthog-js": "^1.434.16",
+    "posthog-node": "^5.54.1",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "shadcn": "^4.21.0",
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
+    "@posthog/wizard": "^2.78.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
