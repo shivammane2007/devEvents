@@ -1,4 +1,12 @@
 import mongoose from 'mongoose';
+import dns from 'node:dns';
+
+// Fix Node.js SRV lookup timeout on Windows / local router DNS
+try {
+    dns.setServers(['8.8.8.8', '8.8.4.4']);
+} catch {
+    // ignore if restricted
+}
 
 type MongooseCache = {
     conn: typeof mongoose | null

@@ -1,0 +1,35 @@
+v# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+language: "en-US"
+early_access: false
+
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+
+  path_filters: 
+    - "!node_modules/**"
+    - "!package-lock.json"
+    - "!.next/**"
+    - "!public/**"
+    - "!*.tsbuildinfo"
+
+chat:
+  auto_reply: true
+
+path_instructions:
+  - path: "app/**/*.{ts,tsx}"
+    instructions: |
+      Ensure proper Next.js 15/16 App Router conventions are followed (RSC vs Client Components). Verify performance, semantic HTML, and accessibility.
+  - path: "database/**/*.{ts,tsx}"
+    instructions: |
+      Verify Mongoose schema definitions, field validations, and proper index creation.
+  - path: "components/**/*.{ts,tsx}"
+    instructions: |
+      Check component reusability, proper typing of props, and responsive Tailwind styling.
