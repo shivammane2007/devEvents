@@ -1,6 +1,8 @@
 import React from 'react'
 import {notFound} from "next/navigation";
 import {IEvent} from "@/database";
+import Event from "@/database/event.model";
+import connectDB from "@/lib/mongodb";
 import {getSimilarEventsBySlug} from "@/lib/actions/event.actions";
 import Image from "next/image";
 import BookEvent from "@/components/BookEvent";
@@ -51,22 +53,31 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
             next: { revalidate: 60 }
         });
 
-        if (!request.ok) {
-            if (request.status === 404) {
-                return notFound();
-            }
-            throw new Error(`Failed to fetch event: ${request.statusText}`);
+        const contentType = request.headers.get("content-type");
+        if (request.ok && contentType && contentType.includes("application/json")) {
+            const response = await request.json();
+            event = response.event;
+        } else {
+            await connectDB();
+            const dbEvent = await Event.findOne({ slug }).lean();
+            if (dbEvent) event = JSON.parse(JSON.stringify(dbEvent));
         }
-
-        const response = await request.json();
-        event = response.event;
 
         if (!event) {
             return notFound();
         }
-    } catch (error) {
-        console.error('Error fetching event:', error);
-        return notFound();
+    } catch {
+        try {
+            await connectDB();
+            const dbEvent = await Event.findOne({ slug }).lean();
+            if (dbEvent) {
+                event = JSON.parse(JSON.stringify(dbEvent));
+            } else {
+                return notFound();
+            }
+        } catch {
+            return notFound();
+        }
     }
 
     const { description, image, overview, date, time, location, mode, agenda, audience, tags, organizer } = event;

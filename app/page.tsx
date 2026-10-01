@@ -1,6 +1,7 @@
 import EventCard from "@/components/EventCard";
 import ExploreBtn from "@/components/ExploreBtn";
-import { IEvent } from "@/database";
+import Event, { IEvent } from "@/database/event.model";
+import connectDB from "@/lib/mongodb";
 import { cacheLife, cacheTag } from "next/cache";
 
 const rawBaseUrl = process.env.NEXT_PUBLIC_BASE_URL 
@@ -18,12 +19,23 @@ const page = async () => {
   let events: IEvent[] = [];
   try {
     const response = await fetch(`${BASE_URL}/api/events`);
-    if (response.ok) {
+    const contentType = response.headers.get("content-type");
+    if (response.ok && contentType && contentType.includes("application/json")) {
       const data = await response.json();
       events = data.events || [];
+    } else {
+      await connectDB();
+      const dbEvents = await Event.find().sort({ createdAt: -1 }).lean();
+      events = JSON.parse(JSON.stringify(dbEvents));
     }
-  } catch (error) {
-    console.error("Failed to fetch events:", error);
+  } catch {
+    try {
+      await connectDB();
+      const dbEvents = await Event.find().sort({ createdAt: -1 }).lean();
+      events = JSON.parse(JSON.stringify(dbEvents));
+    } catch (dbError) {
+      console.error("Failed to fetch events from database:", dbError);
+    }
   }
 
   return (
