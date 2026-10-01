@@ -7,7 +7,8 @@ import BookEvent from "@/components/BookEvent";
 import EventCard from "@/components/EventCard";
 import {cacheLife} from "next/cache";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL 
+  || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
 
 const EventDetailItem = ({ icon, alt, label }: { icon: string; alt: string; label: string; }) => (
     <div className="flex-row-gap-2 items-center">
