@@ -1,6 +1,7 @@
 import connectDB from "@/lib/mongodb";
 import {v2 as cloudinary} from 'cloudinary';
 import { NextRequest, NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import Event from '@/database/event.model';
 
 export async function POST(req: NextRequest) {
@@ -65,6 +66,10 @@ export async function POST(req: NextRequest) {
             tags: tags,
             agenda: agenda
         })
+
+        try {
+            revalidatePath('/');
+        } catch {}
 
         return NextResponse.json({message: 'Event created successfully', event: createdEvent}, {status: 201})
     } catch(e) {
