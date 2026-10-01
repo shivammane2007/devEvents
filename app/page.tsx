@@ -3,8 +3,12 @@ import ExploreBtn from "@/components/ExploreBtn";
 import { IEvent } from "@/database";
 import { cacheLife, cacheTag } from "next/cache";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL 
+const rawBaseUrl = process.env.NEXT_PUBLIC_BASE_URL 
   || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
+
+const BASE_URL = rawBaseUrl.startsWith("http://") || rawBaseUrl.startsWith("https://") 
+  ? rawBaseUrl 
+  : `https://${rawBaseUrl}`;
 
 const page = async () => {
   'use cache';
