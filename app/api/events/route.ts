@@ -33,7 +33,8 @@ export async function POST(req: NextRequest) {
             } catch {}
         }
 
-        const file = formData.get('image');
+        const allImages = formData.getAll('image');
+        const file = allImages.find((item) => typeof item !== 'string' && (item as File).size > 0) || allImages[allImages.length - 1];
 
         if(!file) return NextResponse.json({message: 'Image file is required'}, {status: 400});
 
