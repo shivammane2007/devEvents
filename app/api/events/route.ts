@@ -78,9 +78,15 @@ export async function POST(req: NextRequest) {
     }
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
     try {
         await connectDB()
+
+        if (req?.nextUrl?.searchParams?.get('revalidate')) {
+            try {
+                revalidatePath('/')
+            } catch {}
+        }
 
         const events = await Event.find().sort({createdAt: -1})
 
